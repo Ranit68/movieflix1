@@ -1,0 +1,26 @@
+body {
+  background: #0f172a;
+  color: white;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  padding: 30px;
+}
+
+.card {
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.08);
+}
+
+.details {
+  display: flex;
+  gap: 30px;
+  padding: 40px;
+}

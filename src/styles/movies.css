@@ -1,0 +1,226 @@
+/* ================= GLOBAL ================= */
+.movies-page {
+  background: linear-gradient(135deg, #0f172a 0%, #1a1a2e 50%, #16213e 100%);
+  min-height: 100vh;
+  padding: clamp(1.2rem, 4vw, 2.5rem);
+  color: white;
+  font-family: 'Inter', sans-serif; /* Assuming you have this font loaded */
+  overflow-x: hidden;
+}
+
+/* ================= TITLE ================= */
+.movies-title {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-bottom: clamp(1rem, 3vw, 1.6rem);
+  font-weight: 700;
+  text-align: center;
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* ================= FILTER BAR ================= */
+.filter-bar {
+  display: flex;
+  gap: clamp(1rem, 3vw, 2rem);
+  margin-bottom: clamp(1rem, 3vw, 1.6rem);
+  flex-wrap: wrap;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: slideDown 0.6s ease-out;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 150px;
+}
+
+.filter-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+
+.filter-bar select {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
+  border: 1px solid rgba(225, 29, 72, 0.3);
+  padding: 0.6rem 1rem;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+  transition: all 0.3s ease;
+  appearance: none; /* Remove default arrow */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23e11d48' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e"); /* Custom red arrow */
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+/* ================= FIX DROPDOWN TEXT VISIBILITY ================= */
+
+.filter-bar select option {
+  background-color: #0f172a;
+  color: #ffffff;
+}
+
+/* selected option */
+.filter-bar select option:checked {
+  background-color: #1e293b;
+  color: #ffffff;
+}
+
+/* hover (Firefox mainly) */
+.filter-bar select option:hover {
+  background-color: #334155;
+  color: #ffffff;
+}
+
+
+.filter-bar select:hover {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  border-color: #e11d48;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(225, 29, 72, 0.2);
+}
+
+.filter-bar select:focus {
+  outline: 2px solid #e11d48;
+  outline-offset: 2px;
+}
+
+/* ================= MOVIE GRID ================= */
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(7.5rem, 18vw, 11rem), 1fr));
+  gap: clamp(0.9rem, 2vw, 1.4rem);
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.movie-card-wrapper {
+  animation: scaleIn 0.5s ease-out forwards;
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+@keyframes scaleIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ================= ERROR MESSAGE ================= */
+.error-message {
+  text-align: center;
+  margin-top: clamp(3rem, 10vh, 5rem);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: #e11d48;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.retry-btn {
+  background: #e11d48;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-btn:hover {
+  background: #be123c;
+  transform: translateY(-2px);
+}
+
+/* ================= SKELETON LOADING ================= */
+.skeleton-card {
+  background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 0.5rem;
+  height: 250px; /* Approximate card height */
+  width: 100%;
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ================= MOBILE OPTIMIZATION ================= */
+@media (max-width: 768px) {
+  .filter-bar {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .filter-group {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .movies-page {
+    padding: 1rem;
+  }
+
+  .movies-title {
+    font-size: 1.5rem;
+  }
+
+  .filter-bar {
+    padding: 1rem;
+  }
+
+  .filter-group label {
+    font-size: 0.8rem;
+  }
+
+  .filter-bar select {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .skeleton-card {
+    height: 200px;
+  }
+}
