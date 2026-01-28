@@ -5,7 +5,7 @@ import TrailerModal from "../components/TrailerModal";
 import MovieCard from "../components/MovieCard";
 import "../styles/details.css";
 
-/* ================= SKELETONS ================= */
+/* ================= SKELETON ================= */
 const SkeletonPoster = () => <div className="skeleton skeleton-poster"></div>;
 const SkeletonText = ({ width = "100%" }) => (
   <div className="skeleton skeleton-text" style={{ width }}></div>
@@ -28,11 +28,11 @@ const MovieDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  /* ================= FETCH ================= */
   useEffect(() => {
     fetchDetails();
   }, [id]);
 
-  /* ================= FETCH DETAILS ================= */
   const fetchDetails = async () => {
     try {
       setLoading(true);
@@ -43,8 +43,8 @@ const MovieDetails = () => {
       const [
         detailsRes,
         creditsRes,
-        videoRes,
-        providerRes,
+        videosRes,
+        providersRes,
         similarRes
       ] = await Promise.all([
         tmdb.get(`/${type}/${id}`),
@@ -57,26 +57,26 @@ const MovieDetails = () => {
       setData(detailsRes.data);
       setCast(creditsRes.data.cast || []);
       setCrew(creditsRes.data.crew || []);
-      setVideos(videoRes.data.results || []);
-      setProviders(providerRes.data.results?.IN || null);
+      setVideos(videosRes.data.results || []);
+      setProviders(providersRes.data.results?.IN || null);
       setSimilar(similarRes.data.results || []);
     } catch (err) {
       console.error(err);
-      setError("Failed to load details.");
+      setError("Failed to load movie details.");
     } finally {
       setLoading(false);
     }
   };
 
+  /* ================= STATES ================= */
   if (loading) {
     return (
       <div className="details-page">
-        <div className="details-backdrop skeleton-backdrop"></div>
         <div className="details-content">
           <SkeletonPoster />
           <div className="info">
-            <SkeletonText width="80%" />
-            <SkeletonText width="60%" />
+            <SkeletonText width="70%" />
+            <SkeletonText width="50%" />
             <SkeletonText width="100%" />
           </div>
         </div>
@@ -87,8 +87,9 @@ const MovieDetails = () => {
   if (error) return <div className="error-message">{error}</div>;
   if (!data) return null;
 
+  /* ================= DATA ================= */
   const title = data.title || data.name;
-  const releaseYear =
+  const year =
     data.release_date?.slice(0, 4) ||
     data.first_air_date?.slice(0, 4);
 
@@ -96,11 +97,9 @@ const MovieDetails = () => {
     videos.find(v => v.type === "Trailer" && v.site === "YouTube") ||
     videos.find(v => v.type === "Teaser");
 
-  /* ================= CREW FILTER ================= */
-  const getCrew = (job) => crew.filter(p => p.job === job);
-
-  const directors = getCrew("Director");
-  const producers = getCrew("Producer");
+  /* ================= CREW ================= */
+  const directors = crew.filter(p => p.job === "Director");
+  const producers = crew.filter(p => p.job === "Producer");
   const writers = crew.filter(p =>
     ["Writer", "Screenplay", "Story"].includes(p.job)
   );
@@ -110,6 +109,24 @@ const MovieDetails = () => {
       `https://en.wikipedia.org/wiki/${name.replace(/ /g, "_")}`,
       "_blank"
     );
+  };
+
+  /* ================= ABOUT ================= */
+  const generateAbout = () => {
+    const genres = data.genres?.map(g => g.name).join(", ");
+    const rating = data.vote_average?.toFixed(1);
+
+    return `
+${title} (${year}) is a ${genres.toLowerCase()} ${
+      isTV ? "web series" : "movie"
+    } that gained attention for its storytelling and performances.
+
+With a TMDB rating of ${rating}/10, the ${
+      isTV ? "series" : "film"
+    } delivers strong emotional moments, engaging characters, and quality direction.
+
+Fans of ${genres.toLowerCase()} content will find ${title} a satisfying and memorable watch.
+`;
   };
 
   return (
@@ -123,7 +140,7 @@ const MovieDetails = () => {
         <div className="backdrop-overlay"></div>
       </div>
 
-      {/* MAIN INFO */}
+      {/* ================= MAIN ================= */}
       <div className="details-content">
         <div className="poster">
           <img src={IMG + data.poster_path} alt={title} />
@@ -133,13 +150,13 @@ const MovieDetails = () => {
           <h1>{title}</h1>
 
           <div className="meta">
-            <span>📅 {releaseYear}</span>
+            <span>📅 {year}</span>
             <span>⭐ {data.vote_average?.toFixed(1)} / 10</span>
             {!isTV && <span>⏱ {data.runtime} min</span>}
             {isTV && <span>📺 {data.number_of_seasons} Seasons</span>}
           </div>
 
-          {/* TRAILER */}
+          {/* BUTTONS */}
           <div className="buttons">
             <button
               className="trailer-btn"
@@ -177,7 +194,13 @@ const MovieDetails = () => {
         </div>
       </div>
 
-      {/* CAST */}
+      {/* ================= ABOUT ================= */}
+      <div className="about-section">
+        <h2>📝 About the {isTV ? "Series" : "Movie"}</h2>
+        <p>{generateAbout()}</p>
+      </div>
+
+      {/* ================= CAST ================= */}
       <div className="cast-section">
         <h2>🎭 Cast</h2>
         <div className="cast-list">
@@ -199,7 +222,7 @@ const MovieDetails = () => {
         </div>
       </div>
 
-      {/* CREW */}
+      {/* ================= CREW ================= */}
       <div className="crew-section">
         {directors.length > 0 && (
           <CrewBlock title="🎬 Director" people={directors} openWiki={openWiki} />
@@ -212,7 +235,7 @@ const MovieDetails = () => {
         )}
       </div>
 
-      {/* SIMILAR */}
+      {/* ================= SIMILAR ================= */}
       {similar.length > 0 && (
         <div className="similar-section">
           <h2>🎬 Similar {isTV ? "Series" : "Movies"}</h2>
@@ -230,7 +253,7 @@ const MovieDetails = () => {
         </div>
       )}
 
-      {/* TRAILER MODAL */}
+      {/* ================= TRAILER MODAL ================= */}
       {trailerKey && (
         <TrailerModal
           trailerKey={trailerKey}
@@ -241,6 +264,7 @@ const MovieDetails = () => {
   );
 };
 
+/* ================= CREW BLOCK ================= */
 const CrewBlock = ({ title, people, openWiki }) => (
   <div className="crew-block">
     <h3>{title}</h3>
