@@ -10,7 +10,6 @@ const SkeletonPoster = () => <div className="skeleton skeleton-poster"></div>;
 const SkeletonText = ({ width = "100%" }) => (
   <div className="skeleton skeleton-text" style={{ width }}></div>
 );
-const SkeletonCast = () => <div className="skeleton skeleton-cast"></div>;
 
 const MovieDetails = () => {
   const { id } = useParams();
@@ -21,6 +20,7 @@ const MovieDetails = () => {
 
   const [data, setData] = useState(null);
   const [cast, setCast] = useState([]);
+  const [crew, setCrew] = useState([]);
   const [videos, setVideos] = useState([]);
   const [providers, setProviders] = useState(null);
   const [similar, setSimilar] = useState([]);
@@ -42,7 +42,7 @@ const MovieDetails = () => {
 
       const [
         detailsRes,
-        castRes,
+        creditsRes,
         videoRes,
         providerRes,
         similarRes
@@ -55,90 +55,75 @@ const MovieDetails = () => {
       ]);
 
       setData(detailsRes.data);
-      setCast(castRes.data.cast || []);
+      setCast(creditsRes.data.cast || []);
+      setCrew(creditsRes.data.crew || []);
       setVideos(videoRes.data.results || []);
       setProviders(providerRes.data.results?.IN || null);
       setSimilar(similarRes.data.results || []);
     } catch (err) {
       console.error(err);
-      setError("Failed to load details. Please try again.");
+      setError("Failed to load details.");
     } finally {
       setLoading(false);
     }
   };
 
-  /* ================= LOADING ================= */
   if (loading) {
     return (
       <div className="details-page">
         <div className="details-backdrop skeleton-backdrop"></div>
-
         <div className="details-content">
           <SkeletonPoster />
           <div className="info">
             <SkeletonText width="80%" />
             <SkeletonText width="60%" />
             <SkeletonText width="100%" />
-            <SkeletonText width="90%" />
           </div>
         </div>
       </div>
     );
   }
 
-  /* ================= ERROR ================= */
-  if (error) {
-    return (
-      <div className="details-page">
-        <div className="error-message">{error}</div>
-      </div>
-    );
-  }
-
+  if (error) return <div className="error-message">{error}</div>;
   if (!data) return null;
 
-  /* ================= DATA ================= */
   const title = data.title || data.name;
   const releaseYear =
     data.release_date?.slice(0, 4) ||
     data.first_air_date?.slice(0, 4);
 
   const trailer =
-    videos.find(v => v.type === "Trailer") ||
+    videos.find(v => v.type === "Trailer" && v.site === "YouTube") ||
     videos.find(v => v.type === "Teaser");
 
-  /* ================= STORY SUMMARY ================= */
-  const generateSummary = () => {
-    const genreText = data.genres?.map(g => g.name).join(", ");
-    const rating = data.vote_average?.toFixed(1);
+  /* ================= CREW FILTER ================= */
+  const getCrew = (job) => crew.filter(p => p.job === job);
 
-    return `
-${title} (${releaseYear}) is a ${genreText?.toLowerCase()} ${
-      isTV ? "web series" : "movie"
-    } that delivers an engaging and immersive viewing experience.
+  const directors = getCrew("Director");
+  const producers = getCrew("Producer");
+  const writers = crew.filter(p =>
+    ["Writer", "Screenplay", "Story"].includes(p.job)
+  );
 
-The story highlights emotional depth, strong character development, and impactful moments that keep viewers invested. 
-With a TMDB rating of ${rating}/10, this ${
-      isTV ? "series" : "film"
-    } stands out for its performances, direction, and storytelling.
-
-If you enjoy ${genreText?.toLowerCase()} content, ${title} is definitely worth watching.
-`;
+  const openWiki = (name) => {
+    window.open(
+      `https://en.wikipedia.org/wiki/${name.replace(/ /g, "_")}`,
+      "_blank"
+    );
   };
 
   return (
     <div className="details-page">
-      {/* ================= BACKDROP ================= */}
+
+      {/* BACKDROP */}
       <div
         className="details-backdrop"
-        style={{
-          backgroundImage: `url(${IMG + data.backdrop_path})`
-        }}
+        style={{ backgroundImage: `url(${IMG + data.backdrop_path})` }}
       >
         <div className="backdrop-overlay"></div>
       </div>
 
-      {/* ================= MAIN INFO ================= */}
+      {/* MAIN INFO */}
       <div className="details-content">
         <div className="poster">
           <img src={IMG + data.poster_path} alt={title} />
@@ -154,14 +139,7 @@ If you enjoy ${genreText?.toLowerCase()} content, ${title} is definitely worth w
             {isTV && <span>📺 {data.number_of_seasons} Seasons</span>}
           </div>
 
-          <p className="overview">{data.overview}</p>
-
-          <div className="genres">
-            {data.genres?.map(g => (
-              <span key={g.id}>{g.name}</span>
-            ))}
-          </div>
-
+          {/* TRAILER */}
           <div className="buttons">
             <button
               className="trailer-btn"
@@ -169,7 +147,7 @@ If you enjoy ${genreText?.toLowerCase()} content, ${title} is definitely worth w
                 trailer
                   ? setTrailerKey(trailer.key)
                   : window.open(
-                      `https://www.youtube.com/results?search_query=${title} official trailer`,
+                      `https://www.youtube.com/results?search_query=${title} trailer`,
                       "_blank"
                     )
               }
@@ -178,7 +156,7 @@ If you enjoy ${genreText?.toLowerCase()} content, ${title} is definitely worth w
             </button>
           </div>
 
-          {/* ================= PROVIDERS ================= */}
+          {/* PROVIDERS */}
           {providers?.flatrate && (
             <div className="providers">
               <h3>Available On</h3>
@@ -194,21 +172,21 @@ If you enjoy ${genreText?.toLowerCase()} content, ${title} is definitely worth w
               </div>
             </div>
           )}
+
+          <p className="overview">{data.overview}</p>
         </div>
       </div>
 
-      {/* ================= STORY SUMMARY ================= */}
-      <div className="story-summary">
-        <h2>📖 Story Summary</h2>
-        <p>{generateSummary()}</p>
-      </div>
-
-      {/* ================= CAST ================= */}
+      {/* CAST */}
       <div className="cast-section">
-        <h2>Top Cast</h2>
+        <h2>🎭 Cast</h2>
         <div className="cast-list">
           {cast.slice(0, 14).map(actor => (
-            <div className="cast-card" key={actor.id}>
+            <div
+              key={actor.id}
+              className="cast-card clickable"
+              onClick={() => openWiki(actor.name)}
+            >
               {actor.profile_path ? (
                 <img src={IMG + actor.profile_path} alt={actor.name} />
               ) : (
@@ -221,11 +199,23 @@ If you enjoy ${genreText?.toLowerCase()} content, ${title} is definitely worth w
         </div>
       </div>
 
-      {/* ================= SIMILAR ================= */}
+      {/* CREW */}
+      <div className="crew-section">
+        {directors.length > 0 && (
+          <CrewBlock title="🎬 Director" people={directors} openWiki={openWiki} />
+        )}
+        {producers.length > 0 && (
+          <CrewBlock title="🎥 Producer" people={producers} openWiki={openWiki} />
+        )}
+        {writers.length > 0 && (
+          <CrewBlock title="✍️ Writer" people={writers} openWiki={openWiki} />
+        )}
+      </div>
+
+      {/* SIMILAR */}
       {similar.length > 0 && (
         <div className="similar-section">
           <h2>🎬 Similar {isTV ? "Series" : "Movies"}</h2>
-
           <div className="movie-row">
             {similar.map(item => (
               <MovieCard
@@ -240,7 +230,7 @@ If you enjoy ${genreText?.toLowerCase()} content, ${title} is definitely worth w
         </div>
       )}
 
-      {/* ================= TRAILER MODAL ================= */}
+      {/* TRAILER MODAL */}
       {trailerKey && (
         <TrailerModal
           trailerKey={trailerKey}
@@ -250,5 +240,22 @@ If you enjoy ${genreText?.toLowerCase()} content, ${title} is definitely worth w
     </div>
   );
 };
+
+const CrewBlock = ({ title, people, openWiki }) => (
+  <div className="crew-block">
+    <h3>{title}</h3>
+    <div className="crew-list">
+      {people.map(p => (
+        <span
+          key={p.id}
+          className="crew-name"
+          onClick={() => openWiki(p.name)}
+        >
+          {p.name}
+        </span>
+      ))}
+    </div>
+  </div>
+);
 
 export default MovieDetails;

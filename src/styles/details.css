@@ -254,6 +254,49 @@
 .similar-section .movie-row {
   gap: 1rem;
 }
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  transform: scale(1.05);
+}
+
+.crew-section {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  background: rgba(255,255,255,0.03);
+  border-radius: 1rem;
+}
+
+.crew-block {
+  margin-bottom: 1.2rem;
+}
+
+.crew-block h3 {
+  margin-bottom: 0.4rem;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.crew-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.crew-name {
+  background: rgba(255,255,255,0.08);
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.crew-name:hover {
+  background: #e11d48;
+  color: white;
+}
 
 
 
