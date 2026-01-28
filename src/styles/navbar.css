@@ -240,13 +240,3 @@
     transform: rotate(-45deg) translate(7px, -6px);
   }
 }
-
-@media (max-width: 30rem) {
-  .nav-links {
-    display: none; /* Hidden by default, shown via hamburger */
-  }
-
-  .nav-search {
-    width: 100%;
-  }
-}

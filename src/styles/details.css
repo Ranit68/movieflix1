@@ -223,6 +223,39 @@
   font-size: 0.9rem;
   color: #cbd5e1;
 }
+.story-summary {
+  margin-top: 3rem;
+  padding: 1.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 1rem;
+  backdrop-filter: blur(8px);
+  line-height: 1.8;
+}
+
+.story-summary h2 {
+  margin-bottom: 0.8rem;
+  font-size: 1.4rem;
+  color: #ffffff;
+}
+
+.story-summary p {
+  font-size: 0.95rem;
+  white-space: pre-line;
+  color: #cbd5e1;
+}
+.similar-section {
+  margin-top: 3rem;
+}
+
+.similar-section h2 {
+  margin-bottom: 1rem;
+}
+
+.similar-section .movie-row {
+  gap: 1rem;
+}
+
+
 
 .no-cast {
   width: 100px;

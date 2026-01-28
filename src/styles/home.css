@@ -2,31 +2,32 @@
 .home {
   background: linear-gradient(135deg, #0b1220 0%, #1a1a2e 50%, #16213e 100%);
   color: white;
-  font-family: 'Inter', sans-serif; /* Assuming you have this font loaded */
+    padding-bottom: 3rem;
+  font-family: "Inter", sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* ================= ERROR MESSAGE ================= */
+/* ================= ERROR ================= */
 .error-message {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 50vh;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #e11d48;
 }
 
 /* ================= HERO ================= */
 .hero {
-  height: 90vh;
+  height: min(90vh, 55rem);
   background-size: cover;
   background-position: center top;
   position: relative;
   display: flex;
   align-items: center;
   padding-top: 4rem;
-  animation: fadeIn 1s ease-in-out;
+  animation: fadeIn 0.9s ease;
 }
 
 .hero::after {
@@ -40,33 +41,31 @@
     rgba(5, 10, 25, 0.3) 70%,
     rgba(5, 10, 25, 0.05) 100%
   );
-  backdrop-filter: blur(2px); /* Glassmorphism effect */
 }
 
 /* ================= HERO CONTENT ================= */
 .hero-overlay {
   position: relative;
   z-index: 2;
-  padding-left: clamp(1.5rem, 6vw, 5rem);
+  padding-left: clamp(1.25rem, 6vw, 5rem);
   max-width: 42rem;
-  animation: slideInLeft 1.2s ease-out;
+  animation: slideInLeft 0.9s ease;
 }
 
 .hero-overlay h1 {
   font-size: clamp(2rem, 5vw, 3.2rem);
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
   font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .hero-overlay p {
-  font-size: clamp(0.9rem, 1.4vw, 1rem);
-  line-height: 1.8;
+  font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+  line-height: 1.75;
   color: #cbd5e1;
   margin-bottom: 1.6rem;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+/* ================= HERO BUTTONS ================= */
 .hero-buttons {
   display: flex;
   gap: 1rem;
@@ -76,37 +75,32 @@
 .hero-buttons button {
   background: linear-gradient(135deg, #e11d48, #be123c);
   border: none;
-  padding: 0.8rem 1.8rem;
+  padding: 0.75rem 1.8rem;
   border-radius: 0.6rem;
   color: white;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(225, 29, 72, 0.3);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .hero-buttons button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(225, 29, 72, 0.4);
+  box-shadow: 0 6px 14px rgba(225, 29, 72, 0.35);
 }
 
-.hero-buttons button:focus {
-  outline: 2px solid #e11d48;
-  outline-offset: 2px;
-}
-
-/* ================= SECTIONS ================= */
+/* ================= SECTION ================= */
 .movie-section {
-  padding: clamp(1.5rem, 4vw, 3rem);
-  margin-top: -2.5rem;
-  background: rgba(255, 255, 255, 0.02); /* Subtle section background */
+  position: relative;
+  padding: clamp(1.4rem, 4vw, 2.8rem);
+  margin-bottom: 2.5rem;
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 1rem;
-  margin-bottom: 2rem;
-  backdrop-filter: blur(5px);
-  animation: fadeInUp 0.8s ease-out;
+  overflow: hidden;
+  animation: fadeInUp 0.7s ease;
 }
 
+/* ================= HEADER ================= */
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -115,19 +109,18 @@
 }
 
 .section-header h2 {
-  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  font-size: clamp(1.2rem, 2vw, 1.45rem);
   font-weight: 600;
-  margin: 0;
 }
 
 .see-all-btn {
   background: transparent;
   border: 1px solid #e11d48;
   color: #e11d48;
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 1rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: 0.25s;
   font-size: 0.9rem;
 }
 
@@ -139,51 +132,39 @@
 /* ================= MOVIE ROW ================= */
 .movie-row {
   display: flex;
-  gap: clamp(1rem, 2vw, 1.5rem);
+  gap: clamp(0.9rem, 2vw, 1.4rem);
   overflow-x: auto;
-  padding-bottom: 1.4rem;
+  overflow-y: hidden;
+  padding-bottom: 1.2rem;
 
   scroll-behavior: smooth;
-
-  /* smooth inertial scrolling */
   -webkit-overflow-scrolling: touch;
-
-  /* better horizontal UX */
   overscroll-behavior-x: contain;
-scroll-snap-type: x mandatory;
+
   scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
 .movie-row::-webkit-scrollbar {
   display: none;
 }
+
+/* Optional snap (feels premium) */
+.movie-row {
+  scroll-snap-type: x proximity;
+}
+
 .movie-row > * {
   scroll-snap-align: start;
 }
 
-
-/* ================= SKELETON LOADING ================= */
+/* ================= SKELETON ================= */
 .skeleton-card {
   flex-shrink: 0;
-  width: 200px;
-  height: 300px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
+  width: 11.5rem;
+  height: 17rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 0.6rem;
   animation: pulse 1.5s infinite;
-}
-
-.skeleton-image {
-  height: 250px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 0.5rem 0.5rem 0 0;
-}
-
-.skeleton-text {
-  height: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  margin: 0.5rem;
-  border-radius: 0.25rem;
 }
 
 /* ================= ANIMATIONS ================= */
@@ -193,21 +174,22 @@ scroll-snap-type: x mandatory;
 }
 
 @keyframes slideInLeft {
-  from { transform: translateX(-50px); opacity: 0; }
+  from { transform: translateX(-40px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes fadeInUp {
-  from { transform: translateY(20px); opacity: 0; }
+  from { transform: translateY(16px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
 }
 
-/* ================= MOBILE OPTIMIZATION ================= */
+/* ================= MOBILE ================= */
 @media (max-width: 40rem) {
   .hero {
     height: 80vh;
@@ -224,17 +206,66 @@ scroll-snap-type: x mandatory;
   }
 
   .movie-section {
-    margin-top: -1.5rem;
+    margin-top: -1.4rem;
     padding: 1rem;
   }
 
   .section-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .movie-row {
-    gap: 0.8rem;
+    gap: 0.75rem;
   }
 }
+/* ================= MOBILE HERO FIX ================= */
+@media (max-width: 40rem) {
+  .hero {
+    height: 70vh;
+    background-position: center;
+  }
+
+  .hero::after {
+    background: linear-gradient(
+      to bottom,
+      rgba(5, 10, 25, 0.95) 10%,
+      rgba(5, 10, 25, 0.85) 45%,
+      rgba(5, 10, 25, 0.95) 90%
+    );
+  }
+
+  .hero-overlay {
+    max-width: 100%;
+    padding: 1.2rem;
+    text-align: left;
+  }
+
+  .hero-overlay h1 {
+    font-size: 1.6rem;
+    line-height: 1.3;
+  }
+
+  .hero-overlay p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+
+    /* limit text height */
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-buttons button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
